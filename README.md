@@ -1,5 +1,3 @@
----
-
 # **Cyberscope Full-Stack Assignment**
 
 This project is a full-stack implementation built for the **Cyberscope Full-Stack Developer Assignment**.
