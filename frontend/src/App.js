@@ -1,68 +1,89 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import styled from 'styled-components';
 import CoinsList from './pages/CoinsList';
 import CoinDetails from './pages/CoinDetails';
 
+const AppShell = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+`;
+
+const HeaderBar = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+`;
+
+const BrandLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
+
+const Title = styled.h1`
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  color: #0b1220;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 80%;
+`;
+
+const FooterBar = styled.footer`
+  padding: 12px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  color: #a0a0a0;
+`;
+
 export default function App() {
   return (
-    <div style={styles.app}>
-      <header style={styles.header}>
-        <Link to="/" style={styles.brand}>
-          <h1 style={{ margin: 0 }}>Cyberscope</h1>
-        </Link>
-      </header>
+    <AppShell>
+      <HeaderBar>
+        <BrandLink to="/">
+          <Title>Coin list by CoinGecko</Title>
+        </BrandLink>
+      </HeaderBar>
 
-      <main style={styles.main}>
+      <MainContent>
         <Routes>
           <Route path="/" element={<CoinsList />} />
           <Route path="/coins/:id" element={<CoinDetails />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </main>
+      </MainContent>
 
-      <footer style={styles.footer}>
+      <FooterBar>
         <small>Cyberscope — Coin list powered by CoinGecko</small>
-      </footer>
-    </div>
+      </FooterBar>
+    </AppShell>
   );
 }
 
 function NotFound() {
   return (
-    <div style={{ padding: 20 }}>
+    <NotFoundWrap>
       <h2>Page not found</h2>
       <p><Link to="/">Go back to coins list</Link></p>
-    </div>
+    </NotFoundWrap>
   );
 }
 
-const styles = {
-  app: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 20px',
-    borderBottom: '1px solid #eee',
-    background: '#fafafa'
-  },
-  brand: { textDecoration: 'none', color: 'inherit' },
-  navLink: { marginLeft: 12, textDecoration: 'none', color: '#333' },
-  main: {
-    flex: 1,
-    padding: 20,
-    maxWidth: 1100,
-    margin: '0 auto',
-    width: '100%',
-  },
-  footer: {
-    padding: 12,
-    borderTop: '1px solid #eee',
-    textAlign: 'center'
-  }
-};
+const NotFoundWrap = styled.div` padding: 20px; `;

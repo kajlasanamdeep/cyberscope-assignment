@@ -1,5 +1,80 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+const Container = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+`;
+
+const ButtonBase = styled.button`
+  padding: 8px 12px;
+  min-width: 36px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+  &:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #d1d5db;
+  }
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    background: #f9fafb;
+  }
+  &:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+`;
+
+const EdgeButton = styled(ButtonBase)`
+  background: #f8fafc;
+`;
+
+const PageButton = styled(ButtonBase)`
+  ${(p) =>
+    p.$active
+      ? `
+    background: #111827;
+    color: #ffffff;
+    border-color: #111827;
+    cursor: default;
+  `
+      : ''}
+`;
+
+const List = styled.ul`
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  gap: 6px;
+  align-items: center;
+`;
+
+const Item = styled.li``;
+
+const Ellipsis = styled.li`
+  padding: 6px 10px;
+  min-width: 28px;
+  text-align: center;
+  color: #64748b;
+`;
+
+const Current = styled.span`
+  padding: 6px 10px;
+  color: #334155;
+`;
 
 export default function Pagination({
   page,
@@ -71,92 +146,87 @@ export default function Pagination({
 
   if (!totalPages) {
     return (
-      <div style={styles.container} aria-label="Pagination">
-        <button
+      <Container aria-label="Pagination">
+        <ButtonBase
           onClick={handlePrev}
           disabled={page <= 1}
-          style={styles.button}
           aria-label="Previous page"
         >
           ← Prev
-        </button>
+        </ButtonBase>
 
-        <span style={styles.current}>Page {page}</span>
+        <Current>Page {page}</Current>
 
-        <button
+        <ButtonBase
           onClick={handleNext}
-          style={styles.button}
           aria-label="Next page"
         >
           Next →
-        </button>
-      </div>
+        </ButtonBase>
+      </Container>
     );
   }
 
   return (
-    <nav style={styles.container} aria-label="Pagination Navigation">
-      <button
+    <Container aria-label="Pagination Navigation">
+      <EdgeButton
         onClick={() => onPageChange(1)}
         disabled={page === 1}
-        style={styles.edgeButton}
         aria-label="First page"
       >
         « First
-      </button>
+      </EdgeButton>
 
-      <button
+      <ButtonBase
         onClick={handlePrev}
         disabled={page === 1}
-        style={styles.button}
         aria-label="Previous page"
       >
         ‹ Prev
-      </button>
+      </ButtonBase>
 
-      <ul style={styles.list}>
+      <List>
         {paginationRange.map((p, idx) => {
           if (p === 'LEFT_ELLIPSIS' || p === 'RIGHT_ELLIPSIS') {
             return (
-              <li key={`${p}-${idx}`} style={styles.ellipsis} aria-hidden>
+              <Ellipsis key={`${p}-${idx}`} aria-hidden>
                 …
-              </li>
+              </Ellipsis>
             );
           }
 
           const isActive = p === page;
           return (
-            <li key={p} style={styles.item}>
-              <button
+            <Item key={p}>
+              <PageButton
                 onClick={() => onClickPage(p)}
                 aria-current={isActive ? 'page' : undefined}
-                style={isActive ? styles.activeButton : styles.pageButton}
+                $active={isActive}
+                disabled={isActive}
               >
                 {p}
-              </button>
-            </li>
+              </PageButton>
+            </Item>
           );
         })}
-      </ul>
+      </List>
 
-      <button
+      <ButtonBase
         onClick={handleNext}
         disabled={page === totalPages}
-        style={styles.button}
         aria-label="Next page"
       >
         Next ›
-      </button>
+      </ButtonBase>
 
-      <button
+      <EdgeButton
         onClick={() => onPageChange(totalPages)}
         disabled={page === totalPages}
-        style={styles.edgeButton}
         aria-label="Last page"
       >
         Last »
-      </button>
-    </nav>
+      </EdgeButton>
+    </Container>
   );
 }
 
@@ -165,62 +235,4 @@ Pagination.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   totalPages: PropTypes.number,
   siblingCount: PropTypes.number
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    padding: '10px 0',
-    flexWrap: 'wrap'
-  },
-  list: {
-    listStyle: 'none',
-    display: 'flex',
-    padding: 0,
-    margin: 0,
-    gap: 6,
-    alignItems: 'center'
-  },
-  item: {},
-  ellipsis: {
-    padding: '6px 10px',
-    minWidth: 28,
-    textAlign: 'center'
-  },
-  button: {
-    padding: '6px 10px',
-    borderRadius: 6,
-    border: '1px solid #ddd',
-    background: '#fff',
-    cursor: 'pointer'
-  },
-  edgeButton: {
-    padding: '6px 8px',
-    borderRadius: 6,
-    border: '1px solid #ddd',
-    background: '#f7f7f7',
-    cursor: 'pointer'
-  },
-  pageButton: {
-    padding: '6px 10px',
-    minWidth: 36,
-    borderRadius: 6,
-    border: '1px solid #ddd',
-    background: '#fff',
-    cursor: 'pointer'
-  },
-  activeButton: {
-    padding: '6px 10px',
-    minWidth: 36,
-    borderRadius: 6,
-    border: '1px solid #ccc',
-    background: '#222',
-    color: '#fff',
-    cursor: 'default'
-  },
-  current: {
-    padding: '6px 10px'
-  }
 };
